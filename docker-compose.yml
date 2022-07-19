@@ -1,6 +1,7 @@
 version: "3.9"
 services:
   bot:
+    platform: linux/amd64 
     image: degendaoo/listing-bot
     ports:
       - "4000:4000"

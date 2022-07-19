@@ -1,4 +1,4 @@
-FROM node:16 as dependencies
+FROM --platform=linux/amd64 node:16 as dependencies
 WORKDIR /daoo-listing-bot
 COPY package.json yarn.lock .env ./
 RUN yarn install --frozen-lockfile
