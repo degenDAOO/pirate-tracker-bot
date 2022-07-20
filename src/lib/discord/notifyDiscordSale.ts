@@ -41,40 +41,43 @@ export default async function notifyDiscordSale(
 			inline: true
 		},
     {
-      name: 'Rank est.',
-      value: `${data.item?.rank_est}`,
-      inline: true
-    },
-    {
       name: 'Seller',
-      value: truncateForAddress(data.item.market_place_state.seller_address as string),
+      value: `[${truncateForAddress(data.item.market_place_state.seller_address as string)}](https://hyperspace.xyz/account/${data.item.market_place_state.seller_address})`,
       inline: true
-    },
-		{
-			name: '\u200B',
-			value: '---',
-			inline: false
-		}
+    }
 	];
+  
+  if (data.item.project_id == 'degentrashpandas') {
+    const traits = ['IDEA_CREDIT', 'EXALTED_STAT', '❤️'];
+    traits.map(key => {
+      let trait = {
+            name: key,
+            value: attributes[key],
+            inline: true
+          };
+      fields.push(trait);
+    });
+    
+    // Add in the divider between Price/Seller if we show metadata
+    fields.splice(2, 0, {
+      name: '\u200B',
+      value: '__Hidden Traits__',
+      inline: false
+    });
+  };
 
-	Object.keys(attributes).forEach(function (key) {
-		if (key != 'generation') {
-			let $trait = {
-				name: key,
-				value: attributes[key] ?? 'n/a',
-				inline: true
-			};
-			fields.push($trait);
-		}
-	});
-	
-	fields.push(
-		{
-			name: '---',
-			value: '\u200B',
-			inline: false
-		}
-	);
+  // Keep if we want to auto show all metadata traits.
+  //
+	// Object.keys(attributes).forEach(function (key) {
+	// 	if (key != 'generation' && key != 'sequence') {
+	// 		let $trait = {
+	// 			name: key,
+	// 			value: attributes[key] ?? 'n/a',
+	// 			inline: true
+	// 		};
+	// 		fields.push($trait);
+	// 	}
+	// });
 
 	const actionRowMsg = new MessageActionRow({
     type: 1,
@@ -95,17 +98,17 @@ export default async function notifyDiscordSale(
 
   const embedMsg = new MessageEmbed({
     color: 0x202220,
-    title: data.item.name,
-		description: '\u200B',
+    title: `${data.item.name} Listed for:\u000A${data.item.market_place_state.price} SOL`,
+    description: '\u200B',
     url: `https://hyperspace.xyz/token/${data.token_address}`,
-    thumbnail: {
+    image: {
       url: encodeURI(data.item.meta_data_img),
-      width: 128,
-      height: 128,
+      width: 1069,
+      height: 1069,
     },
 		fields: fields,
 		author: {
-			name: `NEW ${data.action_type}`
+			name: `${data.action_type}  →  Rank: ${data.item?.rank_est}`
 		},
     footer: {
       text: 'Data provided by Hyperspace  |  🤖 by JSB',
