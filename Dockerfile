@@ -3,14 +3,14 @@ WORKDIR /daoo-listing-bot
 COPY package.json yarn.lock .env ./
 RUN yarn install --frozen-lockfile
 
-FROM node:16 as builder
+FROM --platform=linux/amd64 node:16 as builder
 WORKDIR /daoo-listing-bot
 COPY . .
 COPY --from=dependencies /daoo-listing-bot/node_modules ./node_modules
 COPY --from=dependencies /daoo-listing-bot/.env ./.env
 RUN yarn build
 
-FROM node:16 as runner
+FROM --platform=linux/amd64 node:16 as runner
 WORKDIR /daoo-listing-bot
 ENV NODE_ENV production
 # If you are using a custom next.config.js file, uncomment this line.
