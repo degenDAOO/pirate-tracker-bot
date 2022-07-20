@@ -48,7 +48,7 @@ export default async function notifyDiscordSale(
 	];
   
   if (data.item.project_id == 'degentrashpandas') {
-    const traits = ['IDEA_CREDIT', 'EXALTED_STAT', '❤️'];
+    const traits = ['EXALTED_STAT', '❤️'];
     traits.map(key => {
       let trait = {
             name: key,
