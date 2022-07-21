@@ -2,6 +2,7 @@ import * as Ably from 'ably';
 import dotenv from "dotenv";
 import notifyDiscordSale from 'lib/discord/notifyDiscordSale';
 import logger from 'lib/logger';
+import notifyTwitter from 'lib/twitter/notifyTwitter';
 
 const result = dotenv.config();
 
@@ -20,5 +21,6 @@ export default function startAblyFeedFor(
 
   channel.subscribe('LISTING', function(message) {
     notifyDiscordSale(discordChannelId, message.data);
+    notifyTwitter(message.data);
   });
 }
