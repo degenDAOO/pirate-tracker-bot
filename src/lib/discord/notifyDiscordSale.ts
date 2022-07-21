@@ -52,7 +52,7 @@ export default async function notifyDiscordSale(
     traits.map(key => {
       let trait = {
             name: key,
-            value: attributes[key],
+            value: attributes[key] ?? 'none',
             inline: true
           };
       fields.push(trait);
