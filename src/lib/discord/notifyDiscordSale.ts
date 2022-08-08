@@ -1,13 +1,11 @@
 import { Env, loadConfig } from "config";
-import dotenv from "dotenv";
 import { MessageActionRow, MessageEmbed } from "discord.js";
-
 import logger from "lib/logger";
 import { fetchDiscordChannel, initClient } from "./index";
 import truncateForAddress from "lib/truncateForAddress";
 
-const result = dotenv.config();
 const config = loadConfig(process.env as Env);
+const { discordBotToken } = config;
 
 const status: {
   totalNotified: number;
@@ -26,7 +24,7 @@ export default async function notifyDiscordSale(
   test?: boolean
 ) {  
 
-  let client = await initClient(config.discordBotToken);
+  let client = await initClient(discordBotToken);
   const channel = await fetchDiscordChannel(client, channelId);
   if (!channel) {
     return;
