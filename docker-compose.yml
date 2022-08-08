@@ -1,9 +1,16 @@
 version: "3.9"
 services:
   bot:
-    platform: linux/amd64 
-    image: degendaoo/listing-bot
+    platform: linux/arm64 
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     ports:
       - "4000:4000"
     env_file:
-      - .env
+      - .env.local
+    volumes:
+      - ./:/daoo-listing-bot
+      - ignore:/daoo-listing-bot/node_modules
+volumes:
+  ignore:
