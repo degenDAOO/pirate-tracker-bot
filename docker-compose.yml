@@ -10,7 +10,7 @@ services:
     env_file:
       - .env.local
     volumes:
-      - ./:/daoo-listing-bot
-      - ignore:/daoo-listing-bot/node_modules
+      - ./:/pirate-listing-bot
+      - ignore:/pirate-listing-bot/node_modules
 volumes:
   ignore:
