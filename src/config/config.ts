@@ -19,7 +19,6 @@ export interface Config {
   queueConcurrency: number;
   subscriptions: Subscription[];
   ablyToken: string;
-  bannedTokens: Array<String>;
 }
 
 export type Env = { [key: string]: string };
@@ -79,7 +78,6 @@ export function loadConfig(env: Env): MutableConfig {
     queueConcurrency: parseInt(env.QUEUE_CONCURRENCY || "2", 10),
     subscriptions: loadSubscriptions(env),
     ablyToken: env.ABLY_TOKEN,
-    bannedTokens: env.BANNED_TOKENS.split(","),
   };
 
   return {

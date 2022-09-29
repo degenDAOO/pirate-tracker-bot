@@ -1,13 +1,19 @@
 import * as Ably from 'ably';
 import { Env, loadConfig } from 'config';
-import notifyDiscordSale from 'lib/discord/notifyDiscordSale';
+import notifyDiscord from 'lib/discord/notifyDiscordSale';
 import logger from 'lib/logger';
 import notifyTwitter from 'lib/twitter/notifyTwitter';
 
 const config = loadConfig(process.env as Env);
-const { bannedTokens, ablyToken } = config;
+const { ablyToken } = config;
 const options: Ably.Types.ClientOptions = { key: ablyToken };
 const client = new Ably.Realtime(options);
+
+const actionTypesToWatch = ['LISTING', 'TRANSACTION'];
+const traitsToWatch = { 
+  key: 'HEAD', 
+  value: 'Pirate Hat', 
+};
 
 export default function startAblyFeedFor(
   projectChannel: string,
@@ -19,14 +25,16 @@ export default function startAblyFeedFor(
     logger.log(`Successful connect: ${projectChannel}`);
   });
 
-  channel.subscribe('LISTING', function(message) {
+  channel.subscribe(function(message) {
     let data = JSON.parse(message.data);
+    let actionType = data.action_type;
+    let attributes = data.item.attributes;
 
-    if (! bannedTokens.includes(data.token_address)) {
-      notifyDiscordSale(discordChannelId, message.data);
-      notifyTwitter(message.data);
-    } else {
-      logger.log(`Banned Token Blocked: ${data.item.name}`);
+    if (actionTypesToWatch.includes(actionType) && attributes[traitsToWatch.key] == traitsToWatch.value) {
+      notifyDiscord(discordChannelId, actionType, message.data);
     }
+
+    // notifyTwitter(message.data);
+    
   });
 }
