@@ -32,9 +32,9 @@ export default function startAblyFeedFor(
 
     if (actionTypesToWatch.includes(actionType) && attributes[traitsToWatch.key] == traitsToWatch.value) {
       notifyDiscord(discordChannelId, actionType, message.data);
+      notifyTwitter(message.data, actionType);
     }
 
-    // notifyTwitter(message.data);
     
   });
 }

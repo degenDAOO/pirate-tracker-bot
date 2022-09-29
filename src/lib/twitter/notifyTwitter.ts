@@ -9,16 +9,18 @@ const config = loadConfig(process.env as Env);
 
 export default async function notifyTwitter(
   message: string,
+  actionType: string,
 ) {
   let twitterClient = await initTwitterClient(config.twitter) as TwitterApi
 
   const data = JSON.parse(message);
 
   const nftName = data.item.name;
-  const seller = truncate(data.item.market_place_state.seller_address as string);
   const solPrice = await getSolInUSD();
   const priceInUSD = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(data.item.market_place_state.price * solPrice);
-  const text = `${nftName} was just listed!\n\n💸 Price: ${data.item.market_place_state.price.toFixed(2)} S◎L\n\n💵 USD: ${priceInUSD}\n\n🤝 Seller: ${seller}\n\n🚀 Buy Now: https://hyperspace.xyz/token/${data.token_address}\n\n🪙 Token: https://solscan.io/token/${data.token_address}#trades`
+
+  const text = actionType == 'LISTING' ? `${nftName} was just listed!\n\n💸 Price: ${data.item.market_place_state.price.toFixed(2)} S◎L\n\n💵 USD: ${priceInUSD}\n\n🤝 Seller: ${truncate(data.item.market_place_state.seller_address as string)}\n\n🚀 Buy Now: https://hyperspace.xyz/token/${data.token_address}\n\n🪙 Token: https://solscan.io/token/${data.token_address}#trades` : `${nftName} was just purchased!\n\n💸 Price: ${data.item.market_place_state.price.toFixed(2)} S◎L\n\n💵 USD: ${priceInUSD}\n\n🤝 Buyer: ${truncate(data.item.market_place_state.buyer_address as string)}\n\n🕵🏻‍♂️ Proof: https://solscan.io/tx/${data.item.market_place_state.signature}\n\n🪙 Token: https://solscan.io/token/${data.token_address}#trades`;
+  
   const mediaArr: string[] = [];
 
   if (Boolean(data.item.meta_data_img)) {
